@@ -44,6 +44,7 @@
     .score {
       top: 10px;
       left: 10px;
+      animation: fadeIn 1s ease-in-out;
     }
 
     .game-over {
@@ -52,48 +53,26 @@
       transform: translate(-50%, -50%);
       display: none;
       color: #f00;
+      animation: popUp 0.5s ease-in-out forwards;
       text-align: center;
-    }
-
-    .restart-btn {
-      margin-top: 10px;
-      padding: 10px 20px;
-      background-color: #0f0;
-      border: none;
-      color: #000;
-      font-size: 1.2rem;
-      font-weight: bold;
-      border-radius: 5px;
-      cursor: pointer;
     }
 
     .controls {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
-      gap: 10px;
-      position: absolute;
-      bottom: -110px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
+      margin-top: 10px;
     }
 
     .arrow-btn {
-      width: 70px;
-      height: 70px;
-      background-color: rgba(255, 255, 255, 0.2);
+      width: 60px;
+      height: 60px;
+      background-color: rgba(255, 255, 255, 0.1);
       color: white;
-      border-radius: 10px;
+      border-radius: 5px;
+      margin: 5px;
       font-size: 2rem;
       font-weight: bold;
       border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
 
     @media (max-width: 600px) {
@@ -105,19 +84,17 @@
       .score, .game-over {
         font-size: 1.2rem;
       }
-
-      .controls {
-        bottom: -140px;
-        gap: 8px;
-      }
-
-      .arrow-btn {
-        width: 60px;
-        height: 60px;
-        font-size: 1.8rem;
-      }
     }
 
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes popUp {
+      0% { transform: translate(-50%, -50%) scale(0); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -130,14 +107,16 @@
       <div>Score: <span id="finalScore">0</span></div>
       <button class="restart-btn" id="restartBtn">Restart</button>
     </div>
-    
-    <!-- Mobile controls -->
-    <div class="controls">
-      <button class="arrow-btn" id="upBtn">⬆</button><br>
+  </div>
+
+  <!-- Mobile controls outside the game grid -->
+  <div class="controls">
+    <button class="arrow-btn" id="upBtn">⬆</button><br>
+    <div>
       <button class="arrow-btn" id="leftBtn">⬅</button>
-      <button class="arrow-btn" id="downBtn">⬇</button>
       <button class="arrow-btn" id="rightBtn">➡</button>
     </div>
+    <button class="arrow-btn" id="downBtn">⬇</button>
   </div>
 
   <script>
@@ -250,11 +229,14 @@
       if (direction.x !== -1) direction = { x: 1, y: 0 };
     });
 
-    // Restart button
-    document.getElementById('restartBtn').addEventListener('click', init);
+    // Restart the game
+    document.getElementById('restartBtn').addEventListener('click', () => {
+      init();
+    });
 
-    // Start the game
+    // Start the game initially
     init();
   </script>
+  
 </body>
 </html>

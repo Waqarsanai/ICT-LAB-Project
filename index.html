@@ -72,7 +72,7 @@
     .controls {
       display: none;
       position: absolute;
-      bottom: -90px;
+      bottom: -110px;
       left: 50%;
       transform: translateX(-50%);
       width: 100%;
@@ -81,15 +81,19 @@
     }
 
     .arrow-btn {
-      width: 60px;
-      height: 60px;
-      background-color: rgba(255, 255, 255, 0.1);
+      width: 70px;
+      height: 70px;
+      background-color: rgba(255, 255, 255, 0.2);
       color: white;
-      border-radius: 5px;
-      margin: 5px;
+      border-radius: 10px;
+      margin: 10px;
       font-size: 2rem;
       font-weight: bold;
       border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
 
     @media (max-width: 600px) {
@@ -104,6 +108,14 @@
 
       .controls {
         display: block;
+        bottom: -130px;
+      }
+
+      .arrow-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 1.8rem;
+        margin: 8px;
       }
     }
 
@@ -248,14 +260,11 @@
       if (direction.x !== -1) direction = { x: 1, y: 0 };
     });
 
-    // Restart the game
-    document.getElementById('restartBtn').addEventListener('click', () => {
-      init();
-    });
+    // Restart button
+    document.getElementById('restartBtn').addEventListener('click', init);
 
-    // Start the game initially
+    // Start the game
     init();
   </script>
-  
 </body>
 </html>

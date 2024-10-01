@@ -44,7 +44,6 @@
     .score {
       top: 10px;
       left: 10px;
-      animation: fadeIn 1s ease-in-out;
     }
 
     .game-over {
@@ -53,7 +52,6 @@
       transform: translate(-50%, -50%);
       display: none;
       color: #f00;
-      animation: popUp 0.5s ease-in-out forwards;
       text-align: center;
     }
 
@@ -70,7 +68,10 @@
     }
 
     .controls {
-      display: none;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
       position: absolute;
       bottom: -110px;
       left: 50%;
@@ -86,11 +87,10 @@
       background-color: rgba(255, 255, 255, 0.2);
       color: white;
       border-radius: 10px;
-      margin: 10px;
       font-size: 2rem;
       font-weight: bold;
       border: none;
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -107,27 +107,17 @@
       }
 
       .controls {
-        display: block;
-        bottom: -130px;
+        bottom: -140px;
+        gap: 8px;
       }
 
       .arrow-btn {
         width: 60px;
         height: 60px;
         font-size: 1.8rem;
-        margin: 8px;
       }
     }
 
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
-    }
-
-    @keyframes popUp {
-      0% { transform: translate(-50%, -50%) scale(0); }
-      100% { transform: translate(-50%, -50%) scale(1); }
-    }
   </style>
 </head>
 <body>

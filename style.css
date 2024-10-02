@@ -1,0 +1,113 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #282c34;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.game-container {
+  position: relative;
+  width: 80vmin;
+  height: 80vmin;
+  max-width: 600px;
+  max-height: 600px;
+  background-color: #000;
+  border-radius: 15px;
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.5), 0 0 30px rgba(0, 255, 0, 0.3);
+  overflow: hidden;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.score, .game-over {
+  position: absolute;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.score {
+  top: 10px;
+  left: 10px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.game-over {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  color: #f00;
+  animation: popUp 0.5s ease-in-out forwards;
+  text-align: center;
+}
+
+.restart-btn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #0f0;
+  border: none;
+  color: #000;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.controls {
+  display: none;
+  position: absolute;
+  bottom: -90px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.arrow-btn {
+  width: 60px;
+  height: 60px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 5px;
+  margin: 10px;
+  font-size: 2rem;
+  font-weight: bold;
+  border: none;
+}
+
+@media (max-width: 600px) {
+  .game-container {
+    width: 90vmin;
+    height: 90vmin;
+    padding: 0%;
+    margin: 0%;
+  }
+
+  .score, .game-over {
+    font-size: 1.2rem;
+  }
+
+  .controls {
+    display: block;
+  }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes popUp {
+  0% { transform: translate(-50%, -50%) scale(0); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}

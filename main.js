@@ -73,7 +73,6 @@ function update() {
 }
 
 function checkCollision({ x, y }) {
-  // Check for collision with itself
   return snake.slice(1).some(segment => segment.x === x && segment.y === y);
 }
 
@@ -104,4 +103,13 @@ document.getElementById('downBtn').addEventListener('click', () => {
 });
 
 document.getElementById('rightBtn').addEventListener('click', () => {
-  if (direction
+  if (direction.x !== -1) direction = { x: 1, y: 0 };
+});
+
+// Restart the game
+document.getElementById('restartBtn').addEventListener('click', () => {
+  init();
+});
+
+// Start the game initially
+init();

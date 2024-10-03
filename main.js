@@ -2,61 +2,76 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const gridSize = 20;
 const boardSize = canvas.width = canvas.height = 400;
-const snakeColorGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-snakeColorGradient.addColorStop(0, '#0a0');
-snakeColorGradient.addColorStop(1, '#0f0');
+
+const snakeColorGradient = (() => {
+  const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  gradient.addColorStop(0, '#0a0');
+  gradient.addColorStop(1, '#0f0');
+  return gradient;
+})();
 
 const appleColor = '#ff4d4d';
 
-let snake;
-let apple;
-let direction;
-let score;
+let snake = [];
+let apple = {};
+let direction = {};
+let score = 0;
 let gameInterval;
 
-function init() {
+const init = () => {
   snake = [{ x: 10, y: 10 }];
-  apple = { x: Math.floor(Math.random() * (boardSize / gridSize)), y: Math.floor(Math.random() * (boardSize / gridSize)) };
+  apple = generateRandomApple();
   direction = { x: 1, y: 0 };
   score = 0;
-  document.querySelector('.score').textContent = `Score: ${score}`;
-  document.querySelector('.game-over').style.display = 'none';
+  updateScoreDisplay(score);
+  hideGameOverScreen();
   gameInterval = setInterval(gameLoop, 200);
-}
+};
 
-function draw() {
+const generateRandomApple = () => ({
+  x: Math.floor(Math.random() * (boardSize / gridSize)),
+  y: Math.floor(Math.random() * (boardSize / gridSize)),
+});
+
+const updateScoreDisplay = (score) => {
+  document.querySelector('.score').textContent = `Score: ${score}`;
+};
+
+const hideGameOverScreen = () => {
+  document.querySelector('.game-over').style.display = 'none';
+};
+
+const draw = () => {
   ctx.clearRect(0, 0, boardSize, boardSize);
 
   // Draw snake
   ctx.fillStyle = snakeColorGradient;
   snake.forEach(({ x, y }) => ctx.fillRect(x * gridSize, y * gridSize, gridSize, gridSize));
 
-  // Draw apple as a circle with shadow
+  // Draw apple
   ctx.fillStyle = appleColor;
   ctx.shadowBlur = 10;
-  ctx.shadowColor = "red";
+  ctx.shadowColor = 'red';
   ctx.beginPath();
   ctx.arc(apple.x * gridSize + gridSize / 2, apple.y * gridSize + gridSize / 2, gridSize / 2, 0, Math.PI * 2);
   ctx.fill();
   ctx.shadowBlur = 0;
 
   // Update score display
-  document.querySelector('.score').textContent = `Score: ${score}`;
-}
+  updateScoreDisplay(score);
+};
 
-function update() {
+const update = () => {
   const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
-  // Wrap the snake around the screen when it hits a wall
-  if (head.x < 0) head.x = (boardSize / gridSize) - 1;
-  if (head.x >= boardSize / gridSize) head.x = 0;
-  if (head.y < 0) head.y = (boardSize / gridSize) - 1;
-  if (head.y >= boardSize / gridSize) head.y = 0;
+  // Wrap the snake around the screen
+  head.x = head.x < 0 ? (boardSize / gridSize) - 1 : head.x >= boardSize / gridSize ? 0 : head.x;
+  head.y = head.y < 0 ? (boardSize / gridSize) - 1 : head.y >= boardSize / gridSize ? 0 : head.y;
 
   // Check if the snake eats the apple
   if (head.x === apple.x && head.y === apple.y) {
     score++;
-    apple = { x: Math.floor(Math.random() * (boardSize / gridSize)), y: Math.floor(Math.random() * (boardSize / gridSize)) };
+    apple = generateRandomApple();
   } else {
     snake.pop();
   }
@@ -65,51 +80,57 @@ function update() {
   snake.unshift(head);
 
   // Check for collision with itself
-  if (checkCollision(head)) {
+  if (isCollision(head)) {
     clearInterval(gameInterval);
-    document.querySelector('.game-over').style.display = 'block';
-    document.getElementById('finalScore').textContent = score;
+    showGameOverScreen();
   }
-}
+};
 
-function checkCollision({ x, y }) {
-  return snake.slice(1).some(segment => segment.x === x && segment.y === y);
-}
+const isCollision = (head) => snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y);
 
-function gameLoop() {
+const showGameOverScreen = () => {
+  document.querySelector('.game-over').style.display = 'block';
+  document.getElementById('finalScore').textContent = score;
+};
+
+const gameLoop = () => {
   update();
   draw();
-}
+};
 
 // Control snake with arrow keys
 document.addEventListener('keydown', ({ key }) => {
-  if (key === 'ArrowRight' && direction.x !== -1) direction = { x: 1, y: 0 };
-  if (key === 'ArrowLeft' && direction.x !== 1) direction = { x: -1, y: 0 };
-  if (key === 'ArrowUp' && direction.y !== 1) direction = { x: 0, y: -1 };
-  if (key === 'ArrowDown' && direction.y !== -1) direction = { x: 0, y: 1 };
+  const directionMapping = {
+    ArrowRight: { x: 1, y: 0 },
+    ArrowLeft: { x: -1, y: 0 },
+    ArrowUp: { x: 0, y: -1 },
+    ArrowDown: { x: 0, y: 1 },
+  };
+
+  if (directionMapping[key] && !(direction.x === -directionMapping[key].x || direction.y === -directionMapping[key].y)) {
+    direction = directionMapping[key];
+  }
 });
 
 // Mobile controls (arrow buttons)
-document.getElementById('upBtn').addEventListener('click', () => {
-  if (direction.y !== 1) direction = { x: 0, y: -1 };
-});
-
-document.getElementById('leftBtn').addEventListener('click', () => {
-  if (direction.x !== 1) direction = { x: -1, y: 0 };
-});
-
-document.getElementById('downBtn').addEventListener('click', () => {
-  if (direction.y !== -1) direction = { x: 0, y: 1 };
-});
-
-document.getElementById('rightBtn').addEventListener('click', () => {
-  if (direction.x !== -1) direction = { x: 1, y: 0 };
+['upBtn', 'leftBtn', 'downBtn', 'rightBtn'].forEach((btnId, i) => {
+  document.getElementById(btnId)?.addEventListener('click', () => {
+    const directions = [
+      { x: 0, y: -1 }, // up
+      { x: -1, y: 0 }, // left
+      { x: 0, y: 1 },  // down
+      { x: 1, y: 0 },  // right
+    ];
+    const newDirection = directions[i];
+    if (!(direction.x === -newDirection.x || direction.y === -newDirection.y)) {
+      direction = newDirection;
+    }
+  });
 });
 
 // Restart the game
-document.getElementById('restartBtn').addEventListener('click', () => {
-  init();
-});
+document.getElementById('restartBtn')?.addEventListener('click', init);
 
 // Start the game initially
 init();
+    

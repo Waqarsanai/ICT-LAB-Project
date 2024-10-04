@@ -3,13 +3,6 @@ const ctx = canvas.getContext('2d');
 const gridSize = 20;
 const boardSize = canvas.width = canvas.height = 400;
 
-const snakeColorGradient = (() => {
-  const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-  gradient.addColorStop(0, '#0a0');
-  gradient.addColorStop(1, '#0f0');
-  return gradient;
-})();
-
 const appleColor = '#ff4d4d';
 
 let snake = [];
@@ -45,8 +38,16 @@ const draw = () => {
   ctx.clearRect(0, 0, boardSize, boardSize);
 
   // Draw snake
-  ctx.fillStyle = snakeColorGradient;
-  snake.forEach(({ x, y }) => ctx.fillRect(x * gridSize, y * gridSize, gridSize, gridSize));
+  snake.forEach(({ x, y }, index) => {
+    // Calculate the shade of green progressively darker for each segment
+    const segmentShade = 100 + (155 * (index / snake.length));
+    ctx.fillStyle = `rgb(0, ${segmentShade}, 0)`;
+
+    // Apply border-radius for rounded corners
+    ctx.beginPath();
+    ctx.roundRect(x * gridSize, y * gridSize, gridSize, gridSize, gridSize * 0.3); // 30% border radius
+    ctx.fill();
+  });
 
   // Draw apple
   ctx.fillStyle = appleColor;
@@ -133,4 +134,3 @@ document.getElementById('restartBtn')?.addEventListener('click', init);
 
 // Start the game initially
 init();
-    
